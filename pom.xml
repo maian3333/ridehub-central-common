@@ -18,7 +18,7 @@
     <repository>
       <id>github</id>
       <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/phungle2508/ridehub-central-common</url>
+      <url>https://maven.pkg.github.com/maian3333/ridehub-central-common</url>
     </repository>
   </distributionManagement>
    <properties>
