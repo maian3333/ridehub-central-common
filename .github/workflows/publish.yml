@@ -1,0 +1,41 @@
+name: Publish Maven Package
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: temurin
+          server-id: github
+          server-username: ${{ github.actor }}
+          server-password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 🔑 Extract version from tag (v1.2.3 → 1.2.3)
+      - name: Extract version from tag
+        run: |
+          TAG="${GITHUB_REF##*/}"
+          VERSION="${TAG#v}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Publishing version: $VERSION"
+
+      # 🔑 Set Maven version dynamically
+      - name: Set Maven version
+        run: mvn versions:set -DnewVersion=${VERSION} -DgenerateBackupPoms=false
+
+      - name: Publish to GitHub Packages
+        run: mvn deploy -DskipTests
