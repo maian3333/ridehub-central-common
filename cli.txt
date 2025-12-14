@@ -1,5 +1,6 @@
 export KEYCLOAK_USERNAME='admin'
 export KEYCLOAK_PASSWORD='admin'
+export CONSUL_ACL_TOKEN=''
 export KEYCLOAK_SECRET=''
 
 mvn clean package -Prun-openapi

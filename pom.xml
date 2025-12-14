@@ -33,6 +33,7 @@
     <keycloak.secret>${env.KEYCLOAK_SECRET}</keycloak.secret>
     <!-- Consul + Gateway -->
     <consul.url>https://consul.appf4.io.vn</consul.url>
+    <consul.acl-token>${env.CONSUL_ACL_TOKEN}</consul.acl-token>
     <gateway.url>https://apigateway.microservices.appf4.io.vn</gateway.url>
     <!-- OpenAPI paths -->
     <openapi.auth.file>${project.build.directory}/openapi-auth.properties</openapi.auth.file>
@@ -247,6 +248,7 @@
                     <argument>${project.basedir}/scripts/consul-download-openapis.sh</argument>
                     <argument>${openapi.auth.file}</argument>
                     <argument>${consul.url}</argument>
+                    <argument>${consul.acl-token}</argument>
                     <argument>${gateway.url}</argument>
                     <argument>${openapi.dir}</argument>
                     <argument>${service.name.pattern}</argument>
