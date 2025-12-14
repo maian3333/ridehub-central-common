@@ -27,7 +27,7 @@ jobs:
           distribution: temurin
           server-id: github
           server-username: ${{ github.actor }}
-          server-password: ${{ secrets.GITHUB_TOKEN }}
+          server-password: ${{ github.token }}
 
       - name: Extract version from tag
         run: |
