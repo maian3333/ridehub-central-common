@@ -32,8 +32,8 @@
     <keycloak.password>${env.KEYCLOAK_PASSWORD}</keycloak.password>
     <keycloak.secret>${env.KEYCLOAK_SECRET}</keycloak.secret>
     <!-- Consul + Gateway -->
-    <consul.url>https://consul.appf4s.io.vn</consul.url>
-    <gateway.url>https://apigateway.microservices.appf4s.io.vn</gateway.url>
+    <consul.url>https://consul.appf4.io.vn</consul.url>
+    <gateway.url>https://apigateway.microservices.appf4.io.vn</gateway.url>
     <!-- OpenAPI paths -->
     <openapi.auth.file>${project.build.directory}/openapi-auth.properties</openapi.auth.file>
     <openapi.dir>${project.build.directory}/openapi</openapi.dir>
