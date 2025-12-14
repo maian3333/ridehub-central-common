@@ -2,7 +2,7 @@
 set -euo pipefail
 
 OPENAPI_DIR="${1:-target/openapi}"
-OUT_ROOT="${2:-src/main/java}"
+OUT_ROOT="${2:-src/main/java/com/ridehub/feign}"
 GEN_VER="${3:-7.14.0}"
 VALIDATE="${4:-false}"
 
@@ -67,7 +67,7 @@ for SPEC in "${SPECS[@]}"; do
   echo "    Spec: ${SPEC}"
   
   # Clean only this service's generated client package
-  rm -rf "${OUT_DIR}/com/ridehub/${SVC_PKG}/client" || true
+  rm -rf "${OUT_DIR}/com/ridehub/feign/${SVC_PKG}/client" || true
   
   # Set JVM system properties to disable validation and avoid path issues
   JAVA_OPTS="-Duser.timezone=UTC -Dfile.encoding=UTF-8"
@@ -78,24 +78,34 @@ for SPEC in "${SPECS[@]}"; do
       -i "$SPEC" \
       -o "$OUT_DIR" \
       -p sourceFolder="${SRC_FOLDER}" \
-      -p apiPackage="com.ridehub.${SVC_PKG}.client.api" \
-      -p modelPackage="com.ridehub.${SVC_PKG}.client.model" \
-      -p invokerPackage="com.ridehub.${SVC_PKG}.client.invoker" \
+      -p apiPackage="com.ridehub.feign.${SVC_PKG}.client.api" \
+      -p modelPackage="com.ridehub.feign.${SVC_PKG}.client.model" \
+      -p invokerPackage="com.ridehub.feign.${SVC_PKG}.client.invoker" \
       --additional-properties useJakartaEe=true,dateLibrary=java8,interfaceOnly=true,useTags=true,hideGenerationTimestamp=true,apiNameSuffix="${API_SUFFIX}",useBeanValidation=true,performBeanValidation=true,useOptional=true,generateParameterObjects=true,aggregateParameters=true,paramNamingStrategy=camelCase,groupByTags=true,useSpringBoot3=true,serializableModel=true \
       --global-property models,apis,supportingFiles,modelTests=false,apiTests=false,modelDocs=false,apiDocs=false \
       --skip-validate-spec \
       --enable-post-process-file \
       >"$LOG_FILE" 2>&1; then
     
-    # Remove generator extras
-    ROOT_OF_SRC="$(dirname "$OUT_DIR")"
-    rm -rf "${ROOT_OF_SRC}/test" \
-           "${ROOT_OF_SRC}/docs" \
-           "${ROOT_OF_SRC}/pom.xml" \
-           "${ROOT_OF_SRC}/build.gradle" \
-           "${ROOT_OF_SRC}/README.md" \
-           "${ROOT_OF_SRC}/.openapi-generator" \
-           "${ROOT_OF_SRC}/.openapi-generator-ignore" 2>/dev/null || true
+    # Remove generator extras - only keep the com folder
+    rm -rf "${OUT_DIR}/test" \
+           "${OUT_DIR}/docs" \
+           "${OUT_DIR}/pom.xml" \
+           "${OUT_DIR}/build.gradle" \
+           "${OUT_DIR}/README.md" \
+           "${OUT_DIR}/.openapi-generator" \
+           "${OUT_DIR}/.openapi-generator-ignore" \
+           "${OUT_DIR}/.github" \
+           "${OUT_DIR}/.gitignore" \
+           "${OUT_DIR}/.travis.yml" \
+           "${OUT_DIR}/build.sbt" \
+           "${OUT_DIR}/git_push.sh" \
+           "${OUT_DIR}/gradle" \
+           "${OUT_DIR}/gradlew" \
+           "${OUT_DIR}/gradlew.bat" \
+           "${OUT_DIR}/gradle.properties" \
+           "${OUT_DIR}/settings.gradle" \
+           "${OUT_DIR}/src" 2>/dev/null || true
     
     echo "   OK: ${SVC} (logs: ${LOG_FILE})"
     OK=$((OK+1))

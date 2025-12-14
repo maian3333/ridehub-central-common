@@ -15,6 +15,10 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
 
+/**
+ * Registrar for scanning and registering Ridehub Feign client beans.
+ * Updated to use consolidated factory classes.
+ */
 public class RidehubFeignRegistrar
         implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
@@ -33,12 +37,13 @@ public class RidehubFeignRegistrar
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata meta, BeanDefinitionRegistry registry) {
-        RidehubFeignScanProperties props = Binder.get(environment)
-                .bind("ridehub.feign", Bindable.of(RidehubFeignScanProperties.class))
-                .orElseGet(RidehubFeignScanProperties::new);
+        RidehubFeignProperties props = Binder.get(environment)
+                .bind("ridehub.feign", Bindable.of(RidehubFeignProperties.class))
+                .orElseGet(RidehubFeignProperties::new);
 
-        if (props.getScans() == null)
+        if (props.getScans() == null) {
             return;
+        }
 
         // Only consider classes ending with "...Api"
         Pattern apiPattern = Pattern.compile(".*Api$");
@@ -58,20 +63,21 @@ public class RidehubFeignRegistrar
                     String beanName = apiClass.getName(); // FQCN avoids collisions
 
                     // Register only once
-                    if (registry.containsBeanDefinition(beanName))
+                    if (registry.containsBeanDefinition(beanName)) {
                         return;
+                    }
 
                     BeanDefinitionBuilder bdb;
                     if (apiClass.isInterface()) {
-                        // Interface => build via programmatic OpenFeign
+                        // Interface => build via programmatic OpenFeign using new consolidated factory
                         bdb = BeanDefinitionBuilder
-                                .genericBeanDefinition(RidehubFeignFactoryBean.class)
+                                .genericBeanDefinition(RidehubFeignFactory.InterfaceFactoryBean.class)
                                 .addConstructorArgValue(apiClass)
                                 .addConstructorArgValue(serviceId);
                     } else {
                         // Concrete class (OpenAPI generated `*Api`) => instantiate with ApiClient
                         bdb = BeanDefinitionBuilder
-                                .genericBeanDefinition(RidehubOpenApiClassFactoryBean.class)
+                                .genericBeanDefinition(RidehubFeignFactory.OpenApiFactoryBean.class)
                                 .addConstructorArgValue(apiClass)
                                 .addConstructorArgValue(serviceId);
                     }
