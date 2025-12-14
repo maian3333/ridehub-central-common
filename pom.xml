@@ -26,7 +26,7 @@
     <spring-cloud.version>2024.0.1</spring-cloud.version>
     <openapi.generator.version>7.14.0</openapi.generator.version>
     <!-- Keycloak (for scripts) -->
-    <keycloak.token.url>https://keycloak.appf4s.io.vn/realms/jhipster/protocol/openid-connect/token</keycloak.token.url>
+    <keycloak.token.url>https://keycloak.appf4.io.vn/realms/jhipster/protocol/openid-connect/token</keycloak.token.url>
     <keycloak.clientId>web_app</keycloak.clientId>
     <keycloak.username>${env.KEYCLOAK_USERNAME}</keycloak.username>
     <keycloak.password>${env.KEYCLOAK_PASSWORD}</keycloak.password>
